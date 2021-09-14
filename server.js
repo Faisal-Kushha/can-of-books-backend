@@ -1,14 +1,17 @@
 "use strict";
 // const BookModel = require("./BookSchema");
+const mongoose = require("mongoose");
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const bookHandler = require("./BookSchema");
+const bookHandler = require("./BookHandler");
+const BookModel = require("./BookSchema");
 
 const app = express();
 app.use(cors());
-
+app.use(express.json());
 const PORT = process.env.PORT;
+mongoose.connect(process.env.URL);
 // const mongoose = require("mongoose");
 
 // main().catch((err) => console.log(err));
@@ -55,7 +58,7 @@ const PORT = process.env.PORT;
 // }
 app.get("/books", bookHandler);
 // function bookHandler(request, response) {
-//   const email = request.query.email;
+//     const userEmail = request.query.email;
 //   BookModel.find({ userEmail: email }, (err, result) => {
 //     if (err) {
 //       console.log(err);
@@ -64,5 +67,40 @@ app.get("/books", bookHandler);
 //     }
 //   });
 // }
+app.post("/addbooks", addBooksHandler);
+async function addBooksHandler(request, response) {
+  const title = request.body.title;
+  const description = request.body.description;
+  const status = request.body.status;
+  const userEmail = request.body.email;
+  await BookModel.create({
+    title: title,
+    description: description,
+    status: status,
+    email: userEmail,
+  });
+  BookModel.find({ email: userEmail }, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      response.send(result);
+    }
+  });
+}
+
+app.delete("/deletebooks/:id", deleteBooksHandler);
+function deleteBooksHandler(request, response) {
+  const bookId = request.params.id;
+  const userEmail = request.query.email;
+  BookModel.deleteOne({ _id: bookId }, (err, result) => {
+    BookModel.find({ email: userEmail }, (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        response.send(result);
+      }
+    });
+  });
+}
 
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
