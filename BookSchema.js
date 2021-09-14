@@ -1,18 +1,18 @@
 const mongoose = require("mongoose");
 // const BookModel = require("./BookHandler");
-main().catch((err) => console.log(err));
-let BookModel;
-async function main() {
-  await mongoose.connect("mongodb://localhost:27017/books");
-  const bookSchema = new mongoose.Schema({
-    title: String,
-    description: String,
-    status: String,
-    email: String,
-  });
-  BookModel = mongoose.model("BookModel", bookSchema);
-  // laodData();
-}
+// main().catch((err) => console.log(err));
+// let BookModel;
+// async function main() {
+// mongoose.connect(process.env.URL);
+const bookSchema = new mongoose.Schema({
+  title: String,
+  description: String,
+  status: String,
+  email: String,
+});
+BookModel = mongoose.model("BookModel", bookSchema);
+// laodData();
+// }
 
 async function laodData() {
   const secret = new BookModel({
@@ -39,14 +39,14 @@ async function laodData() {
   await inferno.save();
   console.log(secret, "---------------------+++++++++--------");
 }
-function bookHandler(request, response) {
-  const userEmail = request.query.email;
-  BookModel.find({ email: userEmail }, (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      response.send(result);
-    }
-  });
-}
-module.exports = bookHandler;
+// function bookHandler(request, response) {
+//   const userEmail = request.query.email;
+//   BookModel.find({ email: userEmail }, (err, result) => {
+//     if (err) {
+//       console.log(err);
+//     } else {
+//       response.send(result);
+//     }
+//   });
+// }
+module.exports = BookModel;
