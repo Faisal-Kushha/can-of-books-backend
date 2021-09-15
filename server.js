@@ -105,12 +105,12 @@ function deleteBooksHandler(request, response) {
 app.put("/updatebooks/:id", updateBooksHandler);
 function updateBooksHandler(request, response) {
   const id = request.params.id;
-  const { title, description, status, userEmail } = request.body;
+  const { title, description, status, email } = request.body;
   BookModel.findByIdAndUpdate(
     id,
     { title, description, status },
     (err, result) => {
-      BookModel.find({ email: userEmail }, (err, result) => {
+      BookModel.find({ email: email }, (err, result) => {
         if (err) {
           console.log(err);
         } else {
